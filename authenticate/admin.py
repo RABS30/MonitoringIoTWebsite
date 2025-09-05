@@ -3,6 +3,12 @@ from django.contrib.auth.admin import UserAdmin
 
 from .models import authUser
 
+# class CustomUserAdmin(UserAdmin):
+#     list_display    = ('email', 'username', 'date_joined', 'last_login', 'is_admin', 'is_staff')
+#     search_fields   = ('email', 'username')
+#     readonly_fields = ('id', 'date_joined', 'last_login')
+    
+
 class CustomUserAdmin(UserAdmin):
     model           = authUser
     
@@ -14,13 +20,15 @@ class CustomUserAdmin(UserAdmin):
     ordering        = ('email', )
     # search hanya bisa relevan dengan email dan username
     search_fields   = ('email', 'username')
+    readonly_fields = ('id', 'date_joined', 'last_login')
+    
     
     # fieldsets saat mengedit user 
     fieldsets       = (
         (None, {'fields' : ('email', 'username', 'password')}),
-        ('Personal info', {'fields' : ('first_name', 'last_name')}),
+        # ('Personal info', {'fields' : ('first_name', 'last_name')}),
         ('Permissions', {'fields' : ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields' : ('last_login', 'date_joined')})
+        # ('Important dates', {'fields' : ('last_login', 'date_joined')})
     )
     
     # fieldsets saat membuat user baru

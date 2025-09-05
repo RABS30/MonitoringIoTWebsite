@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="id" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Masuk | Aplikasi Anda</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="color-scheme" content="light dark" />
+  </head>
+  <body class="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 flex items-center justify-center p-4">
+    <main class="w-full max-w-md">
+      <!-- Kartu Login -->
+      <section class="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 sm:p-8">
+        <!-- Header -->
+        <div class="text-center">
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Monitoring IoT</h1>
+        </div>
+
+        <!-- Kotak Pesan Error (tersembunyi secara default) -->
+        {%if form.errors %}
+            <div id="error-box" class="hidden mt-4 transition transform duration-300 ease-out" role="alert" aria-live="assertive">
+                <div class="flex items-start gap-3 rounded-xl border border-red-300/60 dark:border-red-400/30 bg-red-50 dark:bg-red-950/40 p-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" aria-hidden="true"><path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm.75 6.75a.75.75 0 00-1.5 0v5a.75.75 0 001.5 0v-5Zm0 7.5a.75.75 0 10-1.5 0 .75.75 0 001.5 0Z" clip-rule="evenodd"/></svg>
+                    
+                    <p id="error-msg" class="text-sm text-red-700 dark:text-red-300">Terjadi kendala saat login.</p>
+                    
+                    <button type="button" id="close-error" class="ml-auto flex items-center justify-center text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 transition transform hover:scale-110" aria-label="Tutup notifikasi kesalahan">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M6.225 4.811a.75.75 0 011.06 0L12 9.525l4.715-4.714a.75.75 0 111.06 1.06L13.06 10.5l4.715 4.715a.75.75 0 11-1.06 1.06L12 11.56l-4.715 4.715a.75.75 0 11-1.06-1.06L10.94 10.5 6.225 5.811a.75.75 0 010-1.06z" clip-rule="evenodd"/></svg>
+                    </button>
+                </div>
+            </div>
+        {%endif%}
+
+
+        <!-- Form Login -->
+        <form id="login-form" class="mt-6 space-y-5" method="POST">
+            {% csrf_token %}
+
+            <!-- Email -->
+            <div>
+                <label for={{form.label}} id={{form.email.id_for_label}} class="block text-sm font-medium">Email</label>
+                <input
+                type="email"
+                id="{{form.email.id_for_label}}"
+                name="{{form.email.name}}"
+                required
+                autocomplete="email"
+                inputmode="email"
+                class="mt-1 w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary"
+                placeholder="nama@contoh.com"
+                />
+            </div>
+
+            <!-- Password dengan toggle incognito/eye -->
+            <div>
+                <label for="password" class="block text-sm font-medium">Kata sandi</label>
+                <div class="mt-1 relative">
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                    class="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 pr-10 text-base shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary"
+                    placeholder="••••••••"
+                    aria-describedby="password-help"
+                />
+                <button
+                    type="button"
+                    id="togglePassword"
+                    class="absolute inset-y-0 right-0 px-3 flex items-center justify-center" aria-label="Tampilkan atau sembunyikan kata sandi"
+                >
+                    <!-- eye icon (visible) -->
+                    <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5"><path d="M1.5 12s3.75-7.5 10.5-7.5S22.5 12 22.5 12 18.75 19.5 12 19.5 1.5 12 1.5 12Z"/><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></svg>
+                    <!-- eye-off icon (hidden by default) -->
+                    <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 hidden"><path d="M3.28 2.22a.75.75 0 0 0-1.06 1.06l18.5 18.5a.75.75 0 1 0 1.06-1.06l-2.5-2.5a14.6 14.6 0 0 0 3.02-3.22s-3.75-7.5-10.5-7.5a10.2 10.2 0 0 0-4.92 1.36l-2.6-2.6Z"/><path d="M12 7.5c6.75 0 10.5 7.5 10.5 7.5a14.7 14.7 0 0 1-4.03 4.67L15 16.2a4.5 4.5 0 0 0-5.2-5.2L7.83 9.03A10.2 10.2 0 0 1 12 7.5Z"/></svg>
+                </button>
+                </div>
+                <p id="password-help" class="sr-only">Gunakan tombol bergambar mata untuk melihat atau menyembunyikan kata sandi.</p>
+            </div>
+
+            <!-- Aksi tambahan -->
+            <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2">
+                <input id="remember" name="remember" type="checkbox" class="h-4 w-4 rounded border-gray-300 dark:border-gray-600" />
+                <label for="remember">Ingat saya</label>
+                </div>
+                <a href="/forgot-password" class="font-medium text-blue-600 hover:underline">Lupa kata sandi?</a>
+            </div>
+
+            <!-- Tombol Masuk -->
+            <button type="submit" class="w-full rounded-xl bg-blue-600 text-white font-semibold py-2.5 shadow hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">Masuk</button>
+
+            <!-- Divider -->
+            <div class="relative my-3">
+                <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                </div>
+                <div class="relative flex justify-center text-xs uppercase">
+                <span class="bg-white dark:bg-gray-800 px-2 text-gray-500">atau</span>
+                </div>
+            </div>
+
+            <!-- OAuth Google -->
+            <a href="/oauth2/authorize/google" class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 py-2.5 font-medium shadow hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300" aria-label="Masuk dengan Google">
+                <!-- Google G icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="h-5 w-5" aria-hidden="true">
+                <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.915 31.658 29.401 35 24 35c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 5.053 29.268 3 24 3 12.955 3 4 11.955 4 23s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.651-.389-3.917z"/>
+                <path fill="#FF3D00" d="M6.306 14.691l6.571 4.818C14.226 16.108 18.755 13 24 13c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 5.053 29.268 3 24 3 16.318 3 9.656 7.337 6.306 14.691z"/>
+                <path fill="#4CAF50" d="M24 43c5.346 0 10.162-2.047 13.77-5.384l-6.349-5.364C29.357 33.83 26.833 35 24 35c-5.373 0-9.893-3.326-11.293-7.946l-6.53 5.033C9.464 38.556 16.227 43 24 43z"/>
+                <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-1.59 3.658-6.104 7-11.303 7-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 5.053 29.268 3 24 3c-8.284 0-15 6.716-15 15s6.716 15 15 15c7.5 0 13.747-5.219 15.611-12.083C43.748 21.341 44 20.696 44 20c0-.651-.238-1.256-.389-1.917z"/>
+                </svg>
+                <span>Masuk dengan Google</span>
+            </a>
+            </form>
+
+            <!-- Footer Kecil -->
+            <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
+            Belum punya akun?
+            <a href="/register" class="font-medium text-blue-600 hover:underline">Buat akun baru</a>
+            </p>
+        </section>
+
+        <!-- Catatan aksesibilitas & legal kecil -->
+        <p class="mt-4 text-xs text-center text-gray-500 dark:text-gray-400">Dengan masuk, Anda menyetujui Ketentuan Layanan & Kebijakan Privasi.</p>
+        </main>
+
+        <script>
+        // Toggle show/hide password dengan ikon mata
+        (function () {
+            const input = document.getElementById('password');
+            const toggle = document.getElementById('togglePassword');
+            const eyeOpen = document.getElementById('eye-open');
+            const eyeClosed = document.getElementById('eye-closed');
+            if (toggle && input) {
+            toggle.addEventListener('click', () => {
+                const isHidden = input.getAttribute('type') === 'password';
+                input.setAttribute('type', isHidden ? 'text' : 'password');
+                eyeOpen.classList.toggle('hidden', !isHidden);
+                eyeClosed.classList.toggle('hidden', isHidden);
+                input.focus({ preventScroll: true });
+            });
+            }
+        })();
+
+        // Tampilkan pesan error berdasarkan query parameter ?error=
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const errorKey = params.get('error');
+            if (!errorKey) return;
+            const map = {
+            account_not_found: 'Akun tidak ditemukan. Pastikan Anda sudah mendaftar.',
+            invalid_credentials: 'Email atau kata sandi salah. Silakan cek kembali.',
+            default: 'Terjadi kendala saat login. Silakan coba lagi.'
+            };
+            const box = document.getElementById('error-box');
+            const msg = document.getElementById('error-msg');
+            if (box && msg) {
+            msg.textContent = map[errorKey] || map.default;
+            box.classList.remove('hidden');
+            box.classList.add('opacity-0');
+            setTimeout(() => {
+                box.classList.remove('opacity-0');
+                box.classList.add('opacity-100');
+            }, 10);
+            }
+        })();
+
+        // Validasi sederhana sisi-klien (opsional)
+        document.getElementById('login-form')?.addEventListener('submit', function (e) {
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            if (!email.value || !password.value) {
+            e.preventDefault();
+            const box = document.getElementById('error-box');
+            const msg = document.getElementById('error-msg');
+            msg.textContent = 'Mohon isi email dan kata sandi.';
+            box.classList.remove('hidden');
+            email.focus();
+            }
+        });
+
+        // Animasi tutup pesan error
+        document.getElementById('close-error')?.addEventListener('click', function () {
+            const box = document.getElementById('error-box');
+            if (box) {
+            box.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => box.classList.add('hidden'), 300);
+            }
+        });
+        </script>
+
+        <style>
+        :root { --tw-ring-color: rgb(37 99 235 / 0.35); }
+        .focus\:ring-primary\/20:focus { --tw-ring-color: rgb(37 99 235 / 0.2); }
+        .focus\:border-primary:focus { border-color: rgb(37 99 235); }
+        #error-box { opacity: 1; transform: scale(1); }
+        .opacity-0 { opacity: 0 !important; }
+        .opacity-100 { opacity: 1 !important; }
+        .scale-95 { transform: scale(0.95) !important; }
+        .transition { transition: all 0.3s ease; }
+        </style>
+    </body>
+    </html>
